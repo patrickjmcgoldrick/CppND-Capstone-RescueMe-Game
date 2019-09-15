@@ -7,10 +7,23 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
       engine(dev()),
       random_w(0, static_cast<int>(grid_width)),
       random_h(0, static_cast<int>(grid_height)) {
+
   PlaceFood();
+
+  Patron p0(5, grid_height);
+  patrons.push_back(p0);
+  Patron p1(10, grid_height);
+  patrons.push_back(p1);
+  Patron p2(15, grid_height);
+  patrons.push_back(p2);
+  
+  RipCurrent rc0(250, 80, 30);
+  ripCurrents.push_back(rc0);
+  RipCurrent rc1(300, 150, 70);
+  ripCurrents.push_back(rc1);
 }
 
-void Game::Run(Controller const &controller, Renderer &renderer,
+void Game::Run(Controller &controller, Renderer &renderer,
                std::size_t target_frame_duration) {
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
@@ -23,9 +36,9 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
+    controller.HandleInput(running, snake, patrons);
     Update();
-    renderer.Render(snake, food);
+    renderer.Render(snake, patrons, ripCurrents, food);
 
     frame_end = SDL_GetTicks();
 
@@ -69,6 +82,11 @@ void Game::Update() {
   if (!snake.alive) return;
 
   snake.Update();
+
+  // move Patrons
+  for (Patron &patron : patrons) {
+    patron.Update();
+  }
 
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);

@@ -2,15 +2,17 @@
 #define GAME_H
 
 #include <random>
+#include <vector>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
 #include "snake.h"
+#include "patron.h"
 
 class Game {
  public:
   Game(std::size_t grid_width, std::size_t grid_height);
-  void Run(Controller const &controller, Renderer &renderer,
+  void Run(Controller &controller, Renderer &renderer,
            std::size_t target_frame_duration);
   int GetScore() const;
   int GetSize() const;
@@ -18,6 +20,8 @@ class Game {
  private:
   Snake snake;
   SDL_Point food;
+  std::vector<Patron> patrons;
+  std::vector<RipCurrent> ripCurrents;
 
   std::random_device dev;
   std::mt19937 engine;

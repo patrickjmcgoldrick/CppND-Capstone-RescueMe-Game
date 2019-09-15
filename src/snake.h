@@ -2,17 +2,17 @@
 #define SNAKE_H
 
 #include <vector>
+#include "actor.h"
 #include "SDL.h"
 
-class Snake {
+class Snake : public Actor {
  public:
-  enum class Direction { kUp, kDown, kLeft, kRight };
 
   Snake(int grid_width, int grid_height)
       : grid_width(grid_width),
         grid_height(grid_height),
         head_x(grid_width / 2),
-        head_y(grid_height / 2) {}
+        head_y(grid_height / 2), Actor (0.0, 0.0) {}
 
   void Update();
 

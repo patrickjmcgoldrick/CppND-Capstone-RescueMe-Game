@@ -31,6 +31,9 @@ Renderer::Renderer(const std::size_t screen_width,
     std::cerr << "Renderer could not be created.\n";
     std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
   }
+
+  // where we draw the line between water and sand
+  y_water_sand_divide = 2 * screen_height / 3;
 }
 
 Renderer::~Renderer() {
@@ -38,14 +41,42 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const snake, SDL_Point const &food) {
+void Renderer::Render(Snake const snake, std::vector<Patron> const patrons, std::vector<RipCurrent> const ripCurrents, SDL_Point const &food) {
+
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
+  SDL_Rect background;
 
   // Clear screen
   SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
   SDL_RenderClear(sdl_renderer);
+
+  // render water
+  SDL_SetRenderDrawColor(sdl_renderer, 0x9A, 0xD2, 0xF0, 0xFF);
+  background.x = 0;
+  background.w = screen_width;
+  background.y = 0;
+  background.h = y_water_sand_divide;
+  SDL_RenderFillRect(sdl_renderer, &background);
+
+  // render Sand
+  SDL_SetRenderDrawColor(sdl_renderer, 0xF0, 0xD9, 0x9A, 0xFF);
+  background.x = 0;
+  background.w = screen_width;
+  background.y = y_water_sand_divide;
+  background.h = screen_height;
+  SDL_RenderFillRect(sdl_renderer, &background);
+
+  // render Patrons
+  for (Patron const &patron : patrons) {
+    RenderPatron(patron);
+  }
+
+  // Render Ripcurrent
+  for (RipCurrent const &ripCurrent : ripCurrents) {
+    RenderRipCurrent(ripCurrent);
+  }
 
   // Render food
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
@@ -73,6 +104,91 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);
+}
+
+void Renderer::RenderRipCurrent(RipCurrent const ripCurrent) {
+
+  SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x00, 0xFF, 0xFF);
+
+  SDL_RenderDrawLine(sdl_renderer, ripCurrent.x, y_water_sand_divide, ripCurrent.x, y_water_sand_divide - ripCurrent.length);
+
+  SDL_Rect block;
+
+  block.x = ripCurrent.x - (ripCurrent.width / 2);
+  block.y = y_water_sand_divide - ripCurrent.length;
+  block.w = ripCurrent.width;
+  block.h = ripCurrent.length;
+  SDL_RenderDrawRect(sdl_renderer, &block);
+  
+}
+
+void Renderer::RenderPatron(Patron const patron) {
+  SDL_Rect patron_body;
+  patron_body.w = screen_width / grid_width / 3;
+  patron_body.h = screen_height / grid_height / 3;
+
+  // Render Patron Arms and Legs - Yellow
+  SDL_SetRenderDrawColor(sdl_renderer, 0xF1, 0xE8, 0x69, 0xFF); // Tan / Yellow
+  patron_body.x = patron.x * (screen_width / grid_width);
+  patron_body.y = patron.y * (screen_height / grid_height);
+  SDL_RenderFillRect(sdl_renderer, &patron_body);
+  patron_body.x = patron_body.x + (patron_body.w * 2);
+  SDL_RenderFillRect(sdl_renderer, &patron_body);
+  patron_body.y = patron_body.y + (patron_body.h * 2);
+  SDL_RenderFillRect(sdl_renderer, &patron_body);
+  patron_body.x = patron_body.x - (patron_body.w * 2);
+  SDL_RenderFillRect(sdl_renderer, &patron_body);
+
+  // Render Chest and Head
+  patron_body.x = patron_body.x + (patron_body.w);
+  patron_body.y = patron_body.y - (patron_body.h * 2);
+  SDL_RenderFillRect(sdl_renderer, &patron_body);
+  patron_body.y = patron_body.y - (patron_body.h);
+  SDL_RenderFillRect(sdl_renderer, &patron_body);
+
+  // Render Patron Body
+  SDL_SetRenderDrawColor(sdl_renderer, 0x20, 0xAE, 0x40, 0xFF); // Green
+  patron_body.y = patron_body.y + (2 * patron_body.h);
+  SDL_RenderFillRect(sdl_renderer, &patron_body);
+
+  if (patron.selected == true) {
+      SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x00, 0x00, 0xFF); // Black outline
+      patron_body.x = patron.x * (screen_width / grid_width);
+      patron_body.y = patron.y * (screen_height / grid_height) - (screen_height / grid_height / 3);
+      patron_body.w = (screen_width / grid_width);
+      patron_body.h = (screen_height / grid_height / 3 * 4);
+      SDL_RenderDrawRect(sdl_renderer, &patron_body);
+  }
+}
+
+void Renderer::RenderLifeguard(Lifeguard const lifeguard) {
+  SDL_Rect lifeguard_body;
+  lifeguard_body.w = screen_width / grid_width / 3;
+  lifeguard_body.h = screen_height / grid_height / 3;
+
+  // Render Patron Arms and Legs - Yellow
+  SDL_SetRenderDrawColor(sdl_renderer, 0xF1, 0xE8, 0x69, 0xFF); // Tan / Yellow
+  lifeguard_body.x = lifeguard.x * (screen_width / grid_width);
+  lifeguard_body.y = lifeguard.y * (screen_height / grid_height);
+  SDL_RenderFillRect(sdl_renderer, &lifeguard_body);
+  lifeguard_body.x = lifeguard_body.x + (lifeguard_body.w * 2);
+  SDL_RenderFillRect(sdl_renderer, &lifeguard_body);
+  lifeguard_body.y = lifeguard_body.y + (lifeguard_body.h * 2);
+  SDL_RenderFillRect(sdl_renderer, &lifeguard_body);
+  lifeguard_body.x = lifeguard_body.x - (lifeguard_body.w * 2);
+  SDL_RenderFillRect(sdl_renderer, &lifeguard_body);
+
+  // Render Chest and Head
+  lifeguard_body.x = lifeguard_body.x + (lifeguard_body.w);
+  lifeguard_body.y = lifeguard_body.y - (lifeguard_body.h * 2);
+  SDL_RenderFillRect(sdl_renderer, &lifeguard_body);
+  lifeguard_body.y = lifeguard_body.y - (lifeguard_body.h);
+  SDL_RenderFillRect(sdl_renderer, &lifeguard_body);
+
+  // Render Patron Body
+  SDL_SetRenderDrawColor(sdl_renderer, 0xDD, 0x0F, 0x0F, 0xFF); // Red shorts
+  lifeguard_body.y = lifeguard_body.y + (2 * lifeguard_body.h);
+  SDL_RenderFillRect(sdl_renderer, &lifeguard_body);
 }
 
 void Renderer::UpdateWindowTitle(int score, int fps) {
