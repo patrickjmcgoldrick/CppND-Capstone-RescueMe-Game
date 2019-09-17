@@ -2,7 +2,9 @@
 #define RENDERER_H
 
 #include <vector>
+#include <string>
 #include "SDL.h"
+#include "SDL_image.h"
 
 #include "patron.h"
 #include "lifeguard.h"
@@ -19,6 +21,9 @@ class Renderer {
   void UpdateWindowTitle(int score, int fps);
 
  private:
+  bool LoadTextures();
+  SDL_Texture* LoadTexture(std::string path);
+
   void RenderRipCurrent(RipCurrent const ripCurrent);
   void RenderPatron(Patron const patron);
   void RenderLifeguard(Lifeguard const lifeguard);
@@ -31,6 +36,14 @@ class Renderer {
   const std::size_t grid_width;
   const std::size_t grid_height;
   std::size_t y_water_sand_divide;
+
+  SDL_Texture *textureLifeguard;
+  SDL_Texture *texturePatronWalking;
+  SDL_Texture *texturePatronSwimming;
+  SDL_Texture *textureTower;
+  SDL_Texture *textureRipCurrent;
+
+
 };
 
 #endif

@@ -1,6 +1,5 @@
 #include "renderer.h"
 #include <iostream>
-#include <string>
 
 Renderer::Renderer(const std::size_t screen_width,
                    const std::size_t screen_height,
@@ -34,11 +33,82 @@ Renderer::Renderer(const std::size_t screen_width,
 
   // where we draw the line between water and sand
   y_water_sand_divide = 2 * screen_height / 3;
+
+  if (LoadTextures()) {
+    printf("Textures loaded.");
+  } else {
+    printf("Textures failed to load.");
+  }
 }
 
 Renderer::~Renderer() {
   SDL_DestroyWindow(sdl_window);
   SDL_Quit();
+}
+
+bool Renderer::LoadTextures() {
+	//Loading success flag
+	bool success = true;
+  
+  // convert images to Textures
+  textureLifeguard = LoadTexture("../images/buoy_24.png");
+  if( textureLifeguard == NULL )
+	{
+		printf( "Failed to create Texture from 'Lifeguard' image!\n" );
+		success = false;
+	}
+
+  texturePatronWalking = LoadTexture("../images/one-man-walking_24.png");
+  if( textureLifeguard == NULL )
+	{
+		printf( "Failed to create Texture from 'Patron Walking' image!\n" );
+		success = false;
+	}
+
+  texturePatronSwimming = LoadTexture("../images/swimming_24.png");
+  if( textureLifeguard == NULL )
+	{
+		printf( "Failed to create Texture from 'Patron Swimming' image!\n" );
+		success = false;
+	}  
+  
+  textureRipCurrent = LoadTexture("../images/rip_250.png");
+  if( textureLifeguard == NULL )
+	{
+		printf( "Failed to create Texture from 'Rip Current' image!\n" );
+		success = false;
+	}  
+	return success;
+}
+
+/**
+ * From: https://lazyfoo.net/tutorials/SDL/06_extension_libraries_and_loading_other_image_formats/index2.php
+ */
+SDL_Texture* Renderer::LoadTexture(std::string path) {
+
+	//The final texture
+	SDL_Texture* texture = NULL;
+
+	//Load image at specified path
+	SDL_Surface* surface = IMG_Load( path.c_str() );
+	if( surface == NULL )
+	{
+		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+	}
+	else
+	{
+    // convert to Texture
+    texture = SDL_CreateTextureFromSurface(sdl_renderer, surface);
+    if( texture == NULL )
+    {
+      printf( "Failed to convert Surface to Texture!\n" );
+    }
+
+		//Get rid of old loaded surface
+		SDL_FreeSurface( surface );
+	}
+
+	return texture;
 }
 
 void Renderer::Render(Snake const snake, std::vector<Patron> const patrons, std::vector<RipCurrent> const ripCurrents, SDL_Point const &food) {
@@ -101,6 +171,17 @@ void Renderer::Render(Snake const snake, std::vector<Patron> const patrons, std:
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
   }
   SDL_RenderFillRect(sdl_renderer, &block);
+
+  // render Lifeguard, etc
+  //Apply the PNG image
+	SDL_Rect dstrect = { 100, 150, 32, 32 };
+  SDL_RenderCopy(sdl_renderer, textureLifeguard, NULL, &dstrect);
+	dstrect = { 100, 110, 32, 32 };
+  SDL_RenderCopy(sdl_renderer, texturePatronWalking, NULL, &dstrect);
+	dstrect = { 100, 70, 32, 32 };
+  SDL_RenderCopy(sdl_renderer, texturePatronSwimming, NULL, &dstrect);
+  dstrect = { 277, 100, 177, 350 };
+  SDL_RenderCopy(sdl_renderer, textureRipCurrent, NULL, &dstrect);
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);
