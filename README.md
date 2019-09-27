@@ -20,6 +20,21 @@
 
 <img src="rescue_me.png"/>
 
+## for MacOS
+
+Install homebrew first.
+
+```ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null```
+
+Install cmake
+
+```brew install cmake```
+
+Install sdl2_image.
+
+```brew install sdl2_image```
+
+
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
