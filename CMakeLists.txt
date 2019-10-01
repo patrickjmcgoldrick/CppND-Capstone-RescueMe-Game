@@ -15,5 +15,5 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 include_directories(src)
 
-add_executable(RescueMe src/main.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/snake.cpp src/patron.cpp src/lifeguard.cpp)
+add_executable(RescueMe src/main.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/snake.cpp src/actor.cpp src/patron.cpp src/lifeguard.cpp)
 target_link_libraries(RescueMe ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
