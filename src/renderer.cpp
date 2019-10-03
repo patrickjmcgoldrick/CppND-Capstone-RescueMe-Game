@@ -193,7 +193,9 @@ void Renderer::Render(Snake const snake, std::vector<std::shared_ptr<Lifeguard>>
 
 void Renderer::RenderLifeguard(std::shared_ptr<Lifeguard> const lifeguard) {
   // render Lifeguard
-  SDL_Rect dstrect = { lifeguard->x, lifeguard->y, 32, 32 };
+  int lx = static_cast <int> (lifeguard->x);
+  int ly = static_cast <int> (lifeguard->y);
+  SDL_Rect dstrect = { lx, ly, 32, 32 };
   SDL_RenderCopy(sdl_renderer, textureLifeguard, NULL, &dstrect);
   if (lifeguard->selected == true) {
     SDL_Rect block;
@@ -223,7 +225,9 @@ void Renderer::RenderRipCurrent(RipCurrent const ripCurrent) {
 }
 
 void Renderer::RenderPatron(Patron const patron) {
-	SDL_Rect dstrect = { patron.x, patron.y, 32, 32 };
+	int px = static_cast <int> (patron.x);
+	int py = static_cast <int> (patron.y);
+	SDL_Rect dstrect = { px, py, 32, 32 };
   SDL_RenderCopy(sdl_renderer, texturePatronWalking, NULL, &dstrect);
 /*
   SDL_Rect patron_body;

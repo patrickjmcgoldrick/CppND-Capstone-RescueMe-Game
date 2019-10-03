@@ -25,13 +25,13 @@ void Controller::HandleInput(bool &running, Snake &snake, std::vector<std::share
           break;
         default:
           std::cout << "Unknown Button - at: " << e.button.x << ", " << e.button.y << std::endl;
-          float clickX = (float)e.button.x;
-          float clickY = (float)e.button.y;
+          float clickX = static_cast <float> (e.button.x);
+          float clickY = static_cast <float> (e.button.y);
           
           bool selectedNewLifeguard = false;
 
           // check Lifeguards for clicks
-          std::for_each(lifeguards.begin(), lifeguards.end(), [&, clickX, clickY, &selectedNewLifeguard](std::shared_ptr<Lifeguard> &lifeguard) {
+          std::for_each(lifeguards.begin(), lifeguards.end(), [&, clickX, clickY](std::shared_ptr<Lifeguard> &lifeguard) {
             std::cout << "lifeguard at: " << lifeguard->x << " , " << lifeguard->y << "\n";
             if (DidClickInside(clickX, clickY, lifeguard)) {
               lifeguard->selected = true;
