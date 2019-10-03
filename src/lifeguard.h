@@ -11,10 +11,22 @@
 class Lifeguard : public Actor {
   public:
 
-  	Lifeguard(float x, float y): Actor(x, y) {}
+  	Lifeguard() {};
+	  
+	void SetPosition(float x, float y) { 
+		this->x = x;
+		this->y = y; 
+	}
  
   	void Update();
-    
+
+	void SetGoal(float x, float y);
+
+    float goalX;
+	float goalY;
+
+	bool operator!=(Lifeguard lg2);
+
 
 };
 

@@ -5,7 +5,11 @@ class Actor {
   public:
   	enum class Direction { kUp, kDown, kLeft, kRight };
 		
-    Actor(float x, float y): x(x), y(y) {
+    Actor() {
+      id = _idCnt++;
+    }
+
+    Actor(float x, float y) : x(x), y(y) {
       id = _idCnt++;
     }
 
@@ -13,7 +17,7 @@ class Actor {
     float y = 0.0f;
     bool selected = true;
     int id;
-    
+
   protected:
 
   	float speed{0.03f};

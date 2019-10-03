@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include <iostream>
+#include <algorithm>
 
 Renderer::Renderer(const std::size_t screen_width,
                    const std::size_t screen_height,
@@ -111,7 +112,7 @@ SDL_Texture* Renderer::LoadTexture(std::string path) {
 	return texture;
 }
 
-void Renderer::Render(Snake const snake, std::vector<Patron> const patrons, std::vector<RipCurrent> const ripCurrents, SDL_Point const &food) {
+void Renderer::Render(Snake const snake, std::vector<std::shared_ptr<Lifeguard>> lifeguards, std::vector<Patron> const patrons, std::vector<RipCurrent> const ripCurrents, SDL_Point const &food) {
 
   SDL_Rect block;
   block.w = screen_width / grid_width;
@@ -143,6 +144,11 @@ void Renderer::Render(Snake const snake, std::vector<Patron> const patrons, std:
     RenderPatron(patron);
   }
 
+  // render Lifeguards
+  std::for_each(lifeguards.begin(), lifeguards.end(), [&](std::shared_ptr<Lifeguard> &lifeguard) {
+    RenderLifeguard(lifeguard);
+  });
+
   // Render Ripcurrent
   for (RipCurrent const &ripCurrent : ripCurrents) {
     RenderRipCurrent(ripCurrent);
@@ -172,11 +178,9 @@ void Renderer::Render(Snake const snake, std::vector<Patron> const patrons, std:
   }
   SDL_RenderFillRect(sdl_renderer, &block);
 
-  // render Lifeguard, etc
+  // render images
   //Apply the PNG image
-	SDL_Rect dstrect = { 100, 150, 32, 32 };
-  SDL_RenderCopy(sdl_renderer, textureLifeguard, NULL, &dstrect);
-	dstrect = { 100, 110, 32, 32 };
+	SDL_Rect dstrect = { 100, 110, 32, 32 };
   SDL_RenderCopy(sdl_renderer, texturePatronWalking, NULL, &dstrect);
 	dstrect = { 100, 70, 32, 32 };
   SDL_RenderCopy(sdl_renderer, texturePatronSwimming, NULL, &dstrect);
@@ -185,6 +189,21 @@ void Renderer::Render(Snake const snake, std::vector<Patron> const patrons, std:
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);
+}
+
+void Renderer::RenderLifeguard(std::shared_ptr<Lifeguard> const lifeguard) {
+  // render Lifeguard
+  SDL_Rect dstrect = { lifeguard->x, lifeguard->y, 32, 32 };
+  SDL_RenderCopy(sdl_renderer, textureLifeguard, NULL, &dstrect);
+  if (lifeguard->selected == true) {
+    SDL_Rect block;
+    SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x00, 0x00, 0xFF); // Black outline
+    block.x = lifeguard->x;
+    block.y = lifeguard->y;
+    block.w = 32;
+    block.h = 32;
+    SDL_RenderDrawRect(sdl_renderer, &block);
+  }
 }
 
 void Renderer::RenderRipCurrent(RipCurrent const ripCurrent) {
@@ -204,6 +223,9 @@ void Renderer::RenderRipCurrent(RipCurrent const ripCurrent) {
 }
 
 void Renderer::RenderPatron(Patron const patron) {
+	SDL_Rect dstrect = { patron.x, patron.y, 32, 32 };
+  SDL_RenderCopy(sdl_renderer, texturePatronWalking, NULL, &dstrect);
+/*
   SDL_Rect patron_body;
   patron_body.w = screen_width / grid_width / 3;
   patron_body.h = screen_height / grid_height / 3;
@@ -231,17 +253,19 @@ void Renderer::RenderPatron(Patron const patron) {
   SDL_SetRenderDrawColor(sdl_renderer, 0x20, 0xAE, 0x40, 0xFF); // Green
   patron_body.y = patron_body.y + (2 * patron_body.h);
   SDL_RenderFillRect(sdl_renderer, &patron_body);
+*/
 
   if (patron.selected == true) {
-      SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x00, 0x00, 0xFF); // Black outline
-      patron_body.x = patron.x * (screen_width / grid_width);
-      patron_body.y = patron.y * (screen_height / grid_height) - (screen_height / grid_height / 3);
-      patron_body.w = (screen_width / grid_width);
-      patron_body.h = (screen_height / grid_height / 3 * 4);
-      SDL_RenderDrawRect(sdl_renderer, &patron_body);
+    SDL_Rect outline;
+    SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x00, 0x00, 0xFF); // Black outline
+    outline.x = patron.x;
+    outline.y = patron.y;
+    outline.w = 32.0;
+    outline.h = 32.0;
+    SDL_RenderDrawRect(sdl_renderer, &outline);
   }
 }
-
+/*
 void Renderer::RenderLifeguard(Lifeguard const lifeguard) {
   SDL_Rect lifeguard_body;
   lifeguard_body.w = screen_width / grid_width / 3;
@@ -271,7 +295,7 @@ void Renderer::RenderLifeguard(Lifeguard const lifeguard) {
   lifeguard_body.y = lifeguard_body.y + (2 * lifeguard_body.h);
   SDL_RenderFillRect(sdl_renderer, &lifeguard_body);
 }
-
+*/
 void Renderer::UpdateWindowTitle(int score, int fps) {
   std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
   SDL_SetWindowTitle(sdl_window, title.c_str());

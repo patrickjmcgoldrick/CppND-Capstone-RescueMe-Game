@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <random>
+#include <thread>
 #include <vector>
 #include "SDL.h"
 #include "controller.h"
@@ -20,7 +21,8 @@ class Game {
  private:
   Snake snake;
   SDL_Point food;
-  std::vector<Patron> patrons;
+  std::vector<Patron> patrons;  
+  std::vector<std::shared_ptr<Lifeguard>> lifeguards;
   std::vector<RipCurrent> ripCurrents;
 
   std::random_device dev;

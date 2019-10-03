@@ -1,5 +1,6 @@
 #include "game.h"
 #include <iostream>
+#include<algorithm>
 #include "SDL.h"
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
@@ -10,13 +11,20 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
 
   PlaceFood();
 
-  Patron p0(5, grid_height);
+  // create inital patrons
+  Patron p0(50, 600);
   patrons.push_back(p0);
-  Patron p1(10, grid_height);
+  Patron p1(100, 600);
   patrons.push_back(p1);
-  Patron p2(15, grid_height);
+  Patron p2(150, 600);
   patrons.push_back(p2);
   
+  // create inital lifeguard
+  lifeguards.push_back(std::make_shared<Lifeguard>());
+  lifeguards.at(0)->SetPosition(200, 200);
+  lifeguards.push_back(std::make_shared<Lifeguard>());
+  lifeguards.at(1)->SetPosition(400, 200);
+
   RipCurrent rc0(250, 80, 30);
   ripCurrents.push_back(rc0);
   RipCurrent rc1(300, 150, 70);
@@ -36,9 +44,9 @@ void Game::Run(Controller &controller, Renderer &renderer,
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake, patrons);
+    controller.HandleInput(running, snake, lifeguards, patrons);
     Update();
-    renderer.Render(snake, patrons, ripCurrents, food);
+    renderer.Render(snake, lifeguards, patrons, ripCurrents, food);
 
     frame_end = SDL_GetTicks();
 
@@ -87,6 +95,11 @@ void Game::Update() {
   for (Patron &patron : patrons) {
     patron.Update();
   }
+
+  // move Lifeguards
+  std::for_each(lifeguards.begin(), lifeguards.end(), [](std::shared_ptr<Lifeguard> &lifeguard) {
+    lifeguard->Update();
+  });
 
   int new_x = static_cast<int>(snake.head_x);
   int new_y = static_cast<int>(snake.head_y);

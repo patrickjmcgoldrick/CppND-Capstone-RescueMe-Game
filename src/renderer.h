@@ -2,6 +2,7 @@
 #define RENDERER_H
 
 #include <vector>
+#include <thread>
 #include <string>
 #include "SDL.h"
 #include "SDL_image.h"
@@ -17,7 +18,7 @@ class Renderer {
            const std::size_t grid_width, const std::size_t grid_height);
   ~Renderer();
 
-  void Render(Snake const snake, std::vector<Patron> const patrons, std::vector<RipCurrent> const ripCurrents, SDL_Point const &food);
+  void Render(Snake const snake, std::vector<std::shared_ptr<Lifeguard>> lifeguards, std::vector<Patron> const patrons, std::vector<RipCurrent> const ripCurrents, SDL_Point const &food);
   void UpdateWindowTitle(int score, int fps);
 
  private:
@@ -26,7 +27,7 @@ class Renderer {
 
   void RenderRipCurrent(RipCurrent const ripCurrent);
   void RenderPatron(Patron const patron);
-  void RenderLifeguard(Lifeguard const lifeguard);
+  void RenderLifeguard(std::shared_ptr<Lifeguard> const lifeguard);
   
   SDL_Window *sdl_window;
   SDL_Renderer *sdl_renderer;
