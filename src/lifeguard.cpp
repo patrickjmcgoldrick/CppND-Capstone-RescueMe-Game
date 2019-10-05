@@ -7,16 +7,16 @@ void Lifeguard::Update() {
   double speed = 1.0f;  
   std::cout << "Lifeguard #: " << id << "\n";
 
-  std::cout << "goal: " << goalX << " , " << goalY << "\n";
+  std::cout << "goal: " << _goalX << " , " << _goalY << "\n";
 
   // move lifeguard toward goal
-  if (goalX != 0 && goalY !=0) {
+  if (_goalX != 0.0f && _goalY != 0.0f) {
     // goal is set
     std::cout << "updating goal -> Lifeguard #: " << id << "\n";
-    std::cout << "goal: " << goalX << " , " << goalY << "\n";
+    std::cout << "goal: " << _goalX << " , " << _goalY << "\n";
 
-    double diffX = x - goalX;
-    double diffY = y - goalY;
+    double diffX = x - _goalX;
+    double diffY = y - _goalY;
     double percentX = diffY / (diffX + diffY);
     double percentY = diffY / (diffX + diffY); 
 
@@ -25,18 +25,23 @@ void Lifeguard::Update() {
   }
 
 }
-void Lifeguard::SetGoal(float gx, float gy) {
+void Lifeguard::setGoal(float gx, float gy) {
   std::cout << "setting goal\n";
   //SDL_Point newGoal = {x, y};
   
-  goalX = gx;
-  goalY = gy;
+  _goalX = gx;
+  _goalY = gy;
   //std::cout << "created goal object\n";
 
   //goal = &newGoal;
 
   std::cout << "set goal\n";
 
+}
+
+void Lifeguard::getGoal(float &x, float &y) {
+  x = _goalX;
+  y = _goalY;
 }
 
 // Operators

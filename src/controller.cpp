@@ -61,11 +61,15 @@ void Controller::HandleInput(bool &running, Snake &snake, std::vector<std::share
               std::cout << "NULL ref" << "\n";
             } else {
               std::cout << "good ref" << "\n";
-              selected->SetGoal(clickX, clickY);
+              selected->setGoal(clickX, clickY);
             }
             
+            float goalX, goalY;
+
+            selected->getGoal(goalX, goalY);
+
             //selected->SetGoal(clickX, clickY);
-            std::cout << "test new Goal: " << selected->goalX << " , " << selected->goalY << "\n";
+            std::cout << "test new Goal: " << goalX << " , " << goalY << "\n";
 
             
           }

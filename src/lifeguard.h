@@ -20,13 +20,14 @@ class Lifeguard : public Actor {
  
   	void Update();
 
-	void SetGoal(float x, float y);
-
-    float goalX;
-	float goalY;
+	void setGoal(float x, float y);
+	void getGoal(float &x, float &y);
 
 	bool operator!=(Lifeguard lg2);
 
+  private:
+    float _goalX;
+	float _goalY;
 
 };
 
