@@ -2,5 +2,5 @@
 #include <iostream>
 
 void Patron::Update() {
-  y = y - speed;
+  _posY = _posY - speed;
 }

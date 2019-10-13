@@ -2,9 +2,9 @@
 #include <cmath>
 #include <iostream>
 
+/// Update position of actor
 void Lifeguard::Update() {
 
-  double speed = 1.0f;  
   std::cout << "Lifeguard #: " << id << "\n";
 
   std::cout << "goal: " << goalX << " , " << goalY << "\n";
@@ -12,16 +12,11 @@ void Lifeguard::Update() {
   // move lifeguard toward goal
   if (goalX != 0 && goalY !=0) {
     // goal is set
-    std::cout << "updating goal -> Lifeguard #: " << id << "\n";
+    std::cout << "updating position -> Lifeguard #: " << id << "\n";
     std::cout << "goal: " << goalX << " , " << goalY << "\n";
 
-    double diffX = x - goalX;
-    double diffY = y - goalY;
-    double percentX = diffY / (diffX + diffY);
-    double percentY = diffY / (diffX + diffY); 
-
-    x = x + (speed * percentX);
-    y = y + (speed * percentY);        
+    _posX += percentPerCycle * dx;
+    _posY += percentPerCycle * dy;        
   }
 
 }
@@ -29,11 +24,17 @@ void Lifeguard::SetGoal(float gx, float gy) {
   std::cout << "setting goal\n";
   //SDL_Point newGoal = {x, y};
   
+  isGoalSet = true;
+
   goalX = gx;
   goalY = gy;
-  //std::cout << "created goal object\n";
 
-  //goal = &newGoal;
+  dx = gx - _posX;
+  dy = gy - _posY;
+
+  float length = sqrt((dx * dx) + (dy * dy));
+
+  percentPerCycle = speed / length;
 
   std::cout << "set goal\n";
 

@@ -193,15 +193,18 @@ void Renderer::Render(Snake const snake, std::vector<std::shared_ptr<Lifeguard>>
 
 void Renderer::RenderLifeguard(std::shared_ptr<Lifeguard> const lifeguard) {
   // render Lifeguard
-  int lx = static_cast <int> (lifeguard->x);
-  int ly = static_cast <int> (lifeguard->y);
-  SDL_Rect dstrect = { lx, ly, 32, 32 };
+  float lx, ly;
+  lifeguard->getPosition(lx, ly);
+
+  int intx = static_cast <int> (lx);
+  int inty = static_cast <int> (ly);
+  SDL_Rect dstrect = { intx, inty, 32, 32 };
   SDL_RenderCopy(sdl_renderer, textureLifeguard, NULL, &dstrect);
   if (lifeguard->selected == true) {
     SDL_Rect block;
     SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x00, 0x00, 0xFF); // Black outline
-    block.x = lifeguard->x;
-    block.y = lifeguard->y;
+    block.x = intx;
+    block.y = inty;
     block.w = 32;
     block.h = 32;
     SDL_RenderDrawRect(sdl_renderer, &block);
@@ -224,10 +227,12 @@ void Renderer::RenderRipCurrent(RipCurrent const ripCurrent) {
   
 }
 
-void Renderer::RenderPatron(Patron const patron) {
-	int px = static_cast <int> (patron.x);
-	int py = static_cast <int> (patron.y);
-	SDL_Rect dstrect = { px, py, 32, 32 };
+void Renderer::RenderPatron(Patron patron) {
+  float px, py;
+  patron.getPosition(px, py);
+	int intx = static_cast <int> (px);
+	int inty = static_cast <int> (py);
+	SDL_Rect dstrect = { intx, inty, 32, 32 };
   SDL_RenderCopy(sdl_renderer, texturePatronWalking, NULL, &dstrect);
 /*
   SDL_Rect patron_body;
@@ -262,8 +267,8 @@ void Renderer::RenderPatron(Patron const patron) {
   if (patron.selected == true) {
     SDL_Rect outline;
     SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x00, 0x00, 0xFF); // Black outline
-    outline.x = patron.x;
-    outline.y = patron.y;
+    outline.x = intx;
+    outline.y = inty;
     outline.w = 32.0;
     outline.h = 32.0;
     SDL_RenderDrawRect(sdl_renderer, &outline);

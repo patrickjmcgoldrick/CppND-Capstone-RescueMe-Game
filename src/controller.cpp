@@ -32,7 +32,6 @@ void Controller::HandleInput(bool &running, Snake &snake, std::vector<std::share
 
           // check Lifeguards for clicks
           std::for_each(lifeguards.begin(), lifeguards.end(), [&, clickX, clickY](std::shared_ptr<Lifeguard> &lifeguard) {
-            std::cout << "lifeguard at: " << lifeguard->x << " , " << lifeguard->y << "\n";
             if (DidClickInside(clickX, clickY, lifeguard)) {
               lifeguard->selected = true;
               selectedNewLifeguard = true;
@@ -78,18 +77,21 @@ void Controller::HandleInput(bool &running, Snake &snake, std::vector<std::share
 
 bool Controller::DidClickInside(float clickX, float clickY, std::shared_ptr<Lifeguard> &actor) {
 
-  float px = actor->x + block_width;
-  float py = actor->y + block_height;
+  float actorX, actorY;
+  actor->getPosition(actorX, actorY);
+
+  float px = actorX + block_width;
+  float py = actorY + block_height;
 
   std::cout << "Click @ " << clickX << ", " << clickY << std::endl;
-  std::cout << "Actor @ " << actor->x << ", " << actor->y << std::endl;
+  std::cout << "Actor @ " << actorX << ", " << actorY << std::endl;
   std::cout << "Actor Block @ " << px << ", " << py << std::endl;
 
-  if (clickX < actor->x) {  // left of
+  if (clickX < actorX) {  // left of
     return false;
   } else if (clickX > px) {  // right of
     return false;
-  } else if (clickY < actor->y) { // above
+  } else if (clickY < actorY) { // above
     return false;
   } else if (clickY > py) { // below
     return false;

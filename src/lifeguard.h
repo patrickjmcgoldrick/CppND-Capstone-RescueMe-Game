@@ -14,8 +14,8 @@ class Lifeguard : public Actor {
   	Lifeguard() {};
 	  
 	void SetPosition(float x, float y) { 
-		this->x = x;
-		this->y = y; 
+		this->_posX = x;
+		this->_posY = y; 
 	}
  
   	void Update();
@@ -24,10 +24,17 @@ class Lifeguard : public Actor {
 
     float goalX;
 	float goalY;
+	
+	bool isGoalSet = false;
+  	
+  	float speed = 1.0f;  
 
 	bool operator!=(Lifeguard lg2);
 
-
+  private:
+  	float dx;
+  	float dy;
+  	float percentPerCycle;
 };
 
 #endif
