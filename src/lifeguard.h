@@ -22,8 +22,8 @@ class Lifeguard : public Actor {
 
 	void SetGoal(float x, float y);
 
-    float goalX;
-	float goalY;
+	float _goalX;
+	float _goalY;
 	
 	bool isGoalSet = false;
   	

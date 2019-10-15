@@ -7,13 +7,13 @@ void Lifeguard::Update() {
 
   std::cout << "Lifeguard #: " << id << "\n";
 
-  std::cout << "goal: " << goalX << " , " << goalY << "\n";
+  std::cout << "goal: " << _goalX << " , " << _goalY << "\n";
 
   // move lifeguard toward goal
-  if (goalX != 0 && goalY !=0) {
+  if (_goalX != 0.0f && _goalY != 0.0f) {
     // goal is set
     std::cout << "updating position -> Lifeguard #: " << id << "\n";
-    std::cout << "goal: " << goalX << " , " << goalY << "\n";
+    std::cout << "goal: " << _goalX << " , " << _goalY << "\n";
 
     _posX += percentPerCycle * dx;
     _posY += percentPerCycle * dy;        
@@ -26,8 +26,8 @@ void Lifeguard::SetGoal(float gx, float gy) {
   
   isGoalSet = true;
 
-  goalX = gx;
-  goalY = gy;
+  _goalX = gx;
+  _goalY = gy;
 
   dx = gx - _posX;
   dy = gy - _posY;
@@ -39,6 +39,7 @@ void Lifeguard::SetGoal(float gx, float gy) {
   std::cout << "set goal\n";
 
 }
+
 
 // Operators
 bool Lifeguard::operator!=(Lifeguard lg2) {

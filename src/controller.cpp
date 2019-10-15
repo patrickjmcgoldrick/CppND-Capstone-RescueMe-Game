@@ -63,8 +63,7 @@ void Controller::HandleInput(bool &running, Snake &snake, std::vector<std::share
               selected->SetGoal(clickX, clickY);
             }
             
-            //selected->SetGoal(clickX, clickY);
-            std::cout << "test new Goal: " << selected->goalX << " , " << selected->goalY << "\n";
+            std::cout << "test new Goal: " << clickX << " , " << clickY << "\n";
 
             
           }
